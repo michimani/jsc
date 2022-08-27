@@ -1,6 +1,10 @@
 package types
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 type IResponse interface{}
 
@@ -26,6 +30,14 @@ func (ts *TsString) Float64() (float64, error) {
 	}
 
 	return f, nil
+}
+
+func (ts *TsString) ToID() string {
+	if ts == nil {
+		return ""
+	}
+
+	return fmt.Sprintf("p%s", strings.ReplaceAll(ts.String(), ".", ""))
 }
 
 // ConversationsHistoryResponse is struct representing response of `GET conversations.history`.

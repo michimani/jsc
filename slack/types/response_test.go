@@ -60,3 +60,24 @@ func Test_TsString_Float64(t *testing.T) {
 		})
 	}
 }
+
+func Test_TsString_ToID(t *testing.T) {
+	okTs := types.TsString("42.42")
+
+	cases := []struct {
+		name   string
+		ts     *types.TsString
+		expect string
+	}{
+		{"ok", &okTs, "p4242"},
+		{"ok: nil", nil, ""},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(tt *testing.T) {
+			asst := assert.New(tt)
+			f := c.ts.ToID()
+			asst.Equal(c.expect, f)
+		})
+	}
+}
