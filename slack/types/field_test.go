@@ -115,3 +115,25 @@ func Test_TsString_ToTime(t *testing.T) {
 		})
 	}
 }
+
+func Test_TsInt_ToTime(t *testing.T) {
+	okTs := types.TsInt(1611802233)
+	okTime := time.Date(2021, time.January, 28, 2, 50, 33, 0, time.UTC).Local()
+
+	cases := []struct {
+		name   string
+		ts     *types.TsInt
+		expect *time.Time
+	}{
+		{"ok", &okTs, &okTime}, // 2021-01-28T02:50:33Z
+		{"ok: nil", nil, nil},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(tt *testing.T) {
+			asst := assert.New(tt)
+			t := c.ts.ToTime()
+			asst.Equal(c.expect, t)
+		})
+	}
+}
