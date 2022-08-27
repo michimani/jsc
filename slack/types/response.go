@@ -115,3 +115,18 @@ type UserProfile struct {
 	Image512              *string `json:"image_512,omitempty"`
 	Team                  *string `json:"team,omitempty"`
 }
+
+// GetChatPermalinkResponse is struct representing response of `GET https://slack.com/api/chat.getPermalink`.
+// https://api.slack.com/methods/chat.getPermalink
+type GetChatPermalinkResponse struct {
+	OK *bool `json:"ok,omitempty"`
+
+	// If 'OK' is true, following fields will included.
+	// https://api.slack.com/methods/chat.getPermalink#examples
+	Channel   *string `json:"channel,omitempty"`
+	Permalink *string `json:"permalink,omitempty"`
+
+	// If 'OK' is false, Error fields will included.
+	// https://api.slack.com/methods/chat.getPermalink#errors
+	Error *string `json:"error,omitempty"`
+}

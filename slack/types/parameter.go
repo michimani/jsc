@@ -29,3 +29,13 @@ type GetUsersInfoParameter struct {
 	// Optional
 	IncludeLocale *bool `paramkey:"include_locale"`
 }
+
+// GetChatPermalinkParameter is struct for parameter of chat.getPermalink api.
+// https://api.slack.com/methods/chat.getPermalink
+type GetChatPermalinkParameter struct {
+	// Required
+	// The ID of the conversation or channel containing the message
+	Channel *string `paramkey:"channel"`
+	// A message's ts value, uniquely identifying it within a channel
+	MessageTs *string `paramkey:"message_ts"`
+}
