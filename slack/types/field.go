@@ -53,3 +53,14 @@ func (ts *TsString) ToTime() (*time.Time, error) {
 	t := time.Unix(int64(f), 0)
 	return &t, nil
 }
+
+type TsInt int64
+
+func (ts *TsInt) ToTime() *time.Time {
+	if ts == nil {
+		return nil
+	}
+
+	t := time.Unix(int64(*ts), 0)
+	return &t
+}

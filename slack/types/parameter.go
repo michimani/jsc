@@ -18,3 +18,14 @@ type ConversationsHistoryParameter struct {
 	Limit              *int    `paramkey:"limit"`
 	Oldest             *string `paramkey:"oldest"`
 }
+
+// GetUsersInfoParameter is struct for parameter of users.info api.
+// https://api.slack.com/methods/users.info
+type GetUsersInfoParameter struct {
+	// Required
+	// User to get info on.
+	User *string `paramkey:"user"`
+
+	// Optional
+	IncludeLocale *bool `paramkey:"include_locale"`
+}
