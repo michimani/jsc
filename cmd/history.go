@@ -74,12 +74,10 @@ func GetJoinedHistory(ctx context.Context, c *slack.SlackClient, in *HistoryInpu
 		}
 	}
 
-	joined := joined(histories...)
-
-	return joined, nil
+	return joined(histories...)
 }
 
-func joined(chs ...*ChannelHistory) *JoinedHistory {
+func joined(chs ...*ChannelHistory) (*JoinedHistory, error) {
 	total := 0
 	for _, ch := range chs {
 		total += len(ch.Messages)
@@ -90,7 +88,10 @@ func joined(chs ...*ChannelHistory) *JoinedHistory {
 	idx := 0
 	for _, ch := range chs {
 		for _, m := range ch.Messages {
-			hm := toHistoryMessage(ch.Channel, m)
+			hm, err := toHistoryMessage(ch.Channel, m)
+			if err != nil {
+				return nil, err
+			}
 			messages[idx] = *hm
 			idx++
 		}
@@ -100,14 +101,20 @@ func joined(chs ...*ChannelHistory) *JoinedHistory {
 
 	return &JoinedHistory{
 		Messages: messages,
-	}
+	}, nil
 }
 
-func toHistoryMessage(channel string, message types.ConversationsHistoryMessage) *HistoryMessage {
+func toHistoryMessage(channel string, message types.ConversationsHistoryMessage) (*HistoryMessage, error) {
 	// TODO: get url by https://api.slack.com/methods/chat.getPermalink
 	messageURL := message.Ts.ToID()
-	postedAt := message.Ts.ToTime()
-	ts, _ := message.Ts.Float64()
+	postedAt, err := message.Ts.ToTime()
+	if err != nil {
+		return nil, err
+	}
+	ts, err := message.Ts.Float64()
+	if err != nil {
+		return nil, err
+	}
 
 	// TODO: get name by https://api.slack.com/methods/users.info
 	username := ""
@@ -122,7 +129,7 @@ func toHistoryMessage(channel string, message types.ConversationsHistoryMessage)
 		Username:    username,
 		Text:        *message.Text,
 		MessageURL:  messageURL,
-		PostedAt:    postedAt,
+		PostedAt:    *postedAt,
 		ts:          ts,
-	}
+	}, nil
 }
