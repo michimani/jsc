@@ -86,11 +86,12 @@ func joined(c *slack.SlackClient, chs ...*ChannelHistory) (*JoinedHistory, error
 	messages := make([]HistoryMessage, total)
 
 	userPool := NewUserPool(c)
+	domainPool := NewDomainPool(c)
 
 	idx := 0
 	for _, ch := range chs {
 		for _, m := range ch.Messages {
-			hm, err := toHistoryMessage(ch.Channel, m, userPool)
+			hm, err := toHistoryMessage(ch.Channel, m, userPool, domainPool)
 			if err != nil {
 				return nil, err
 			}
@@ -106,9 +107,13 @@ func joined(c *slack.SlackClient, chs ...*ChannelHistory) (*JoinedHistory, error
 	}, nil
 }
 
-func toHistoryMessage(channel string, m types.ConversationsHistoryMessage, up *UserPool) (*HistoryMessage, error) {
-	// TODO: get url by https://api.slack.com/methods/chat.getPermalink
-	messageURL := m.Ts.ToID()
+func toHistoryMessage(channel string, m types.ConversationsHistoryMessage, up *UserPool, dp *DomainPool) (*HistoryMessage, error) {
+	domain, err := dp.GetDomain(channel, m.Ts.String())
+	if err != nil {
+		return nil, err
+	}
+
+	messageURL := fmt.Sprintf("https://%s/archives/%s/%s", domain, channel, m.Ts.ToID())
 	postedAt, err := m.Ts.ToTime()
 	if err != nil {
 		return nil, err
