@@ -3,6 +3,8 @@ package types
 type IParameter interface {
 }
 
+// ConversationsHistoryParameter is struct for parameter of conversations.history api.
+// https://api.slack.com/methods/conversations.history
 type ConversationsHistoryParameter struct {
 	// Required
 	// Conversation ID to fetch history for.
@@ -15,11 +17,4 @@ type ConversationsHistoryParameter struct {
 	Latest             *string `paramkey:"latest"`
 	Limit              *int    `paramkey:"limit"`
 	Oldest             *string `paramkey:"oldest"`
-}
-
-func (p *ConversationsHistoryParameter) Value() ConversationsHistoryParameter {
-	if p == nil {
-		return ConversationsHistoryParameter{}
-	}
-	return *p
 }
