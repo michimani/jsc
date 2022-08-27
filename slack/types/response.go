@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type IResponse interface{}
@@ -40,6 +41,12 @@ func (ts *TsString) ToID() string {
 	return fmt.Sprintf("p%s", strings.ReplaceAll(ts.String(), ".", ""))
 }
 
+// ignore micro sec
+func (ts *TsString) ToTime() time.Time {
+	f, _ := ts.Float64()
+	return time.Unix(int64(f), 0)
+}
+
 // ConversationsHistoryResponse is struct representing response of `GET conversations.history`.
 // https://api.slack.com/methods/conversations.history
 type ConversationsHistoryResponse struct {
@@ -69,6 +76,7 @@ type ConversationsHistoryMessage struct {
 	Text        *string             `json:"text,omitempty"`
 	Ts          *TsString           `json:"ts,omitempty"`
 	Username    *string             `json:"username,omitempty"`
+	User        *string             `json:"user,omitempty"`
 	Icons       *MessageIcon        `json:"icons,omitempty"`
 	BotID       *string             `json:"bot_id,omitempty"`
 	Attachments []MessageAttachment `json:"attachments,omitempty"`
