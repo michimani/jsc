@@ -74,10 +74,10 @@ func GetJoinedHistory(ctx context.Context, c *slack.SlackClient, in *HistoryInpu
 		}
 	}
 
-	return joined(histories...)
+	return joined(c, histories...)
 }
 
-func joined(chs ...*ChannelHistory) (*JoinedHistory, error) {
+func joined(c *slack.SlackClient, chs ...*ChannelHistory) (*JoinedHistory, error) {
 	total := 0
 	for _, ch := range chs {
 		total += len(ch.Messages)
@@ -85,10 +85,12 @@ func joined(chs ...*ChannelHistory) (*JoinedHistory, error) {
 
 	messages := make([]HistoryMessage, total)
 
+	userPool := NewUserPool(c)
+
 	idx := 0
 	for _, ch := range chs {
 		for _, m := range ch.Messages {
-			hm, err := toHistoryMessage(ch.Channel, m)
+			hm, err := toHistoryMessage(ch.Channel, m, userPool)
 			if err != nil {
 				return nil, err
 			}
@@ -104,30 +106,33 @@ func joined(chs ...*ChannelHistory) (*JoinedHistory, error) {
 	}, nil
 }
 
-func toHistoryMessage(channel string, message types.ConversationsHistoryMessage) (*HistoryMessage, error) {
+func toHistoryMessage(channel string, m types.ConversationsHistoryMessage, up *UserPool) (*HistoryMessage, error) {
 	// TODO: get url by https://api.slack.com/methods/chat.getPermalink
-	messageURL := message.Ts.ToID()
-	postedAt, err := message.Ts.ToTime()
+	messageURL := m.Ts.ToID()
+	postedAt, err := m.Ts.ToTime()
 	if err != nil {
 		return nil, err
 	}
-	ts, err := message.Ts.Float64()
+	ts, err := m.Ts.Float64()
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: get name by https://api.slack.com/methods/users.info
 	username := ""
-	if message.Username != nil {
-		username = *message.Username
-	} else if message.User != nil {
-		username = *message.User
+	if m.Username != nil {
+		username = *m.Username
+	} else if m.User != nil {
+		un, err := up.GetUserName(*m.User)
+		if err != nil {
+			return nil, err
+		}
+		username = un
 	}
 
 	return &HistoryMessage{
 		ChannelName: channel,
 		Username:    username,
-		Text:        *message.Text,
+		Text:        *m.Text,
 		MessageURL:  messageURL,
 		PostedAt:    *postedAt,
 		ts:          ts,
