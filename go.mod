@@ -1,4 +1,4 @@
-module jsc
+module github.com/michimani/jsc
 
 go 1.19
 

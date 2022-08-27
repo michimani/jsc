@@ -2,8 +2,9 @@ package api
 
 import (
 	"context"
-	"jsc/internal"
-	"jsc/slack/types"
+
+	"github.com/michimani/jsc"
+	"github.com/michimani/jsc/slack/types"
 )
 
 const (
@@ -11,11 +12,8 @@ const (
 )
 
 // https://api.slack.com/methods/conversations.history
-func GetConversationsHistory(ctx context.Context, c *internal.SlackClient, p *types.ConversationsHistoryParameter) (*types.ConversationsHistoryResponse, error) {
-	res := &types.ConversationsHistoryResponse{}
-	if err := c.Do(ctx, "GET", getConversationsHistoryEndpoint, p, res); err != nil {
-		return nil, err
-	}
+func GetConversationsHistory(ctx context.Context, c *jsc.SlackClient, p *types.ConversationsHistoryParameter) (*types.ConversationsHistoryResponse, error) {
+	tc := jsc.NewTypedClient[types.ConversationsHistoryParameter, types.ConversationsHistoryResponse](c)
 
-	return res, nil
+	return tc.CallAPI(ctx, "GET", getConversationsHistoryEndpoint, p)
 }

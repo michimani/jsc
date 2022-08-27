@@ -2,6 +2,8 @@ package types
 
 import "strconv"
 
+type IResponse interface{}
+
 // TsString is type of timestamp string.
 type TsString string
 

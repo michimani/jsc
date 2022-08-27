@@ -1,8 +1,9 @@
 package types_test
 
 import (
-	"jsc/slack/types"
 	"testing"
+
+	"github.com/michimani/jsc/slack/types"
 
 	"github.com/stretchr/testify/assert"
 )
