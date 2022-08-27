@@ -2,6 +2,7 @@ package types_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/michimani/jsc/slack/types"
 
@@ -78,6 +79,39 @@ func Test_TsString_ToID(t *testing.T) {
 			asst := assert.New(tt)
 			f := c.ts.ToID()
 			asst.Equal(c.expect, f)
+		})
+	}
+}
+
+func Test_TsString_ToTime(t *testing.T) {
+	ngTs := types.TsString("not-float")
+	okTs := types.TsString("1611802233.000400")
+	okTime := time.Date(2021, time.January, 28, 2, 50, 33, 0, time.UTC).Local()
+
+	cases := []struct {
+		name    string
+		ts      *types.TsString
+		expect  *time.Time
+		wantErr bool
+	}{
+		{"ok", &okTs, &okTime, false}, // 2021-01-28T02:50:33Z
+		{"ok: nil", nil, nil, false},
+		{"ng: not timestamp string", &ngTs, nil, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(tt *testing.T) {
+			asst := assert.New(tt)
+			t, err := c.ts.ToTime()
+
+			if c.wantErr {
+				asst.Error(err)
+				asst.Nil(t)
+				return
+			}
+
+			asst.NoError(err)
+			asst.Equal(c.expect, t)
 		})
 	}
 }
