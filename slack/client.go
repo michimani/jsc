@@ -1,4 +1,4 @@
-package jsc
+package slack
 
 import (
 	"context"
