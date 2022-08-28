@@ -3,6 +3,12 @@ jsc
 
 'jsc' is a tool that joins multiple slack channels to display posts in chronological order.
 
+# Install
+
+```bash
+brew install michimani/jsc/jsc
+```
+
 # Usage
 
 ```bash
