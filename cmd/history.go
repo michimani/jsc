@@ -28,18 +28,18 @@ type HistoryInput struct {
 }
 
 type HistoryMessage struct {
-	ChannelName string    `json:"channel_name"`
-	Username    string    `json:"username"`
-	MessageURL  string    `json:"message_url"`
-	Text        string    `json:"text"`
-	PostedAt    time.Time `json:"posted_at"`
+	ChannelID  string    `json:"channelId"`
+	Username   string    `json:"username"`
+	MessageURL string    `json:"messageUrl"`
+	Text       string    `json:"text"`
+	PostedAt   time.Time `json:"postedAt"`
 
 	// use for sort
 	ts float64 `json:"-"`
 }
 
 type JoinedHistory struct {
-	Messages []HistoryMessage
+	Messages []HistoryMessage `json:"messages"`
 }
 
 type ChannelHistory struct {
@@ -135,11 +135,11 @@ func toHistoryMessage(channel string, m types.ConversationsHistoryMessage, up *U
 	}
 
 	return &HistoryMessage{
-		ChannelName: channel,
-		Username:    username,
-		Text:        *m.Text,
-		MessageURL:  messageURL,
-		PostedAt:    *postedAt,
-		ts:          ts,
+		ChannelID:  channel,
+		Username:   username,
+		Text:       *m.Text,
+		MessageURL: messageURL,
+		PostedAt:   *postedAt,
+		ts:         ts,
 	}, nil
 }
