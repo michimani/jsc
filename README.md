@@ -9,6 +9,17 @@ jsc
 brew install michimani/jsc/jsc
 ```
 
+### Required Slack Permissions
+
+#### User Token Scopes
+
+- `channels:history`
+- `groups:history`
+- `im:history`
+- `mpim:history`
+- `users:read`
+
+
 # Usage
 
 ```bash
